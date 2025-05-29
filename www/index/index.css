@@ -1,0 +1,32 @@
+html,body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+#send-content{
+    width: 335px;
+}
+.feed{
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    outline: 1px solid black;
+}
+.app{
+    display: flex;
+    width: 600px;
+    height: 400px;
+    flex-direction: column;
+}
+msg{
+    display: flex;
+    flex-direction: row;
+}
+msg p{
+    margin: 0;
+    margin-left: 3px;
+}

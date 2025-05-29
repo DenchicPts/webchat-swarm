@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app:
+    image: webchat:latest
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    networks:
+      - app_net
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    ports:
+      - '80:80'
+
+  redis:
+    image: redis:alpine
+    networks:
+      - app_net
+    volumes:
+      - redis-data:/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+networks:
+  app_net:
+    driver: overlay
+
+volumes:
+  redis-data:
