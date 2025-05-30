@@ -10,10 +10,21 @@ const redisClient = redis.createClient({
     url: `redis://${process.env.REDIS_HOST || 'redis'}:${process.env.REDIS_PORT || 6379}`
 });
 
+async function connectWithRetry(retries = 10, delay = 3000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            await redisClient.connect();
+            console.log("✅ Connected to Redis");
+            return;
+        } catch (err) {
+            console.warn(`⚠️ Redis not ready (${i + 1}/${retries}): ${err.message}`);
+            await new Promise(res => setTimeout(res, delay));
+        }
+    }
+    console.error("❌ Failed to connect to Redis after retries. Exiting...");
+    process.exit(1);
+}
 
-redisClient.connect().then(() => {
-    console.log("Connected to Redis");
-}).catch(console.error);
 
 const wss = new WebSocket.Server({ noServer: true });
 const app = express();
@@ -70,6 +81,8 @@ app.get("/api/v1/message/feed", async (req, res) => {
 
 
 async function init() {
+    await connectWithRetry();
+
     const server = http.createServer(app);
     server.listen(8989, '0.0.0.0', () => {
         console.log(`Running on 0.0.0.0:8989`);
