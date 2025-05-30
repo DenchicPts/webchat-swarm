@@ -4,14 +4,16 @@ services:
   app:
     image: webchat-swarm_webchat:latest
     environment:
-      REDIS_HOST: redis
+      REDIS_HOST: tasks.redis
       REDIS_PORT: 6379
     networks:
       - app_net
     deploy:
+      mode: replicated
       replicas: 2
       restart_policy:
         condition: on-failure
+      endpoint_mode: dnsrr
     ports:
       - '8989:8989'
     init: true
@@ -25,11 +27,7 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+
 
 networks:
   app_net:
