@@ -13,7 +13,7 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - '80:80'
+      - '80:8989'
 
   redis:
     image: redis:alpine
