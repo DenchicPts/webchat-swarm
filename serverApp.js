@@ -41,27 +41,30 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/api/v1/message/send", async (req, res) => {
-    if (!req.body.name) return res.status(400).json({ desc: "name is empty" });
-    if (!req.body.content) return res.status(400).json({ desc: "content is empty" });
+    const { name, content } = req.body;
+    if (!name) return res.status(400).json({ desc: "name is empty" });
+    if (!content) return res.status(400).json({ desc: "content is empty" });
 
-    const msg = {
-        name: req.body.name,
-        content: req.body.content,
+    const message = {
+        name,
+        content,
         timestamp: Date.now()
     };
 
-    await redisClient.rPush('messages', JSON.stringify(msg));
+    await redisClient.lPush("chat:messages", JSON.stringify(message));
 
     wss.clients.forEach(client => {
-        client.send(JSON.stringify({ message: msg, wsApiType: "message" }));
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({ message, wsApiType: "message" }));
+        }
     });
 
     res.status(200).json({ desc: "OK" });
 });
 
 app.get("/api/v1/message/feed", async (req, res) => {
-    let rawMessages = await redisClient.lRange('messages', 0, -1);
-    let feed = rawMessages.map(m => JSON.parse(m));
+    let rawMessages = await redisClient.lRange('chat:messages', 0, -1);
+    let feed = rawMessages.map(m => JSON.parse(m)).reverse(); 
     res.status(200).json({ feed });
 });
 
