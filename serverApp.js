@@ -7,7 +7,7 @@ const path = require('node:path');
 
 
 const redisClient = redis.createClient({
-    url: `redis://${process.env.REDIS_HOST || 'redis'}:${process.env.REDIS_PORT || 6379}`
+    url: `redis://${process.env.REDIS_HOST || 'redis_standalone'}:${process.env.REDIS_PORT || 6379}`
 });
 
 async function connectWithRetry(retries = 10, delay = 3000) {
