@@ -7,7 +7,7 @@ const path = require('node:path');
 
 
 const redisClient = redis.createClient({
-    url: `redis://${process.env.REDIS_HOST || 'localhost'}:${process.env.REDIS_PORT || 6379}`
+    url: `redis://${process.env.REDIS_HOST || 'redis'}:${process.env.REDIS_PORT || 6379}`
 });
 
 
@@ -71,8 +71,8 @@ app.get("/api/v1/message/feed", async (req, res) => {
 
 async function init() {
     const server = http.createServer(app);
-    server.listen(8989, () => {
-        console.log(`Running on localhost:8989`);
+    server.listen(8989, '0.0.0.0', () => {
+        console.log(`Running on 0.0.0.0:8989`);
         server.on('upgrade', onConnectionUpgrade);
     });
 }
