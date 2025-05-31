@@ -29,6 +29,7 @@ services:
     networks:
       - chatnet
     deploy:
+      endpoint_mode: dnsrr
       mode: replicated
       replicas: 1
       restart_policy:
@@ -41,4 +42,4 @@ volumes:
 
 networks:
   chatnet:
-    external: true
+    driver: overlay
