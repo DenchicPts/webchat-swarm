@@ -2,16 +2,14 @@ version: '3.8'
 
 services:
   webchat:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: mychatapp:latest
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
     ports:
-      - target: 8989
-        published: 8989
-        mode: host
+      - "8989:8989"
+    networks:
+      - chatnet
     deploy:
       mode: replicated
       replicas: 2
@@ -25,6 +23,8 @@ services:
     volumes:
       - redis-data:/data
     command: ["redis-server", "--save", "60", "1", "--loglevel", "warning", "--appendonly", "yes"]
+    networks:
+      - chatnet
     deploy:
       mode: replicated
       replicas: 1
@@ -35,3 +35,7 @@ services:
 
 volumes:
   redis-data:
+
+networks:
+  chatnet:
+    external: true
