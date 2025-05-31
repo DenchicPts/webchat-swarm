@@ -6,9 +6,6 @@ RUN npm install
 
 COPY . .
 
-ENV REDIS_HOST=redis
-ENV REDIS_PORT=6379
-
 EXPOSE 8989
 
 CMD ["node", "serverApp.js"]

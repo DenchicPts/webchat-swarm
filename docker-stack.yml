@@ -1,26 +1,37 @@
 version: '3.8'
 
 services:
-  app:
-    image: webchat-swarm_webchat:latest
+  webchat:
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
-      REDIS_HOST: redis_standalone 
+      REDIS_HOST: redis
       REDIS_PORT: 6379
-    networks:
-      - app_net
+    ports:
+      - target: 8989
+        published: 8989
+        mode: host
     deploy:
+      mode: replicated
       replicas: 2
       restart_policy:
         condition: on-failure
-    ports:
-      - '8989:8989'
-    depends_on:
-      - redis_standalone  
+      placement:
+        constraints: [node.role == worker]
 
-networks:
-  app_net:
-    driver: overlay
-    attachable: true 
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning", "--appendonly", "yes"]
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
 
 volumes:
   redis-data:
