@@ -7,10 +7,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
     ports:
-      - target: 8989
-        published: 8989
-        protocol: tcp
-        mode: ingress
+      - "8989:8989"
     networks:
       - chatnet
     deploy:

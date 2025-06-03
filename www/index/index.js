@@ -1,7 +1,7 @@
 //Заменить на домен/адрес в интернете
 // ws://zevordex.ru/ws
 //Если есть сертификат: wss://zevordex.ru/ws
-const rws = new wspc("ws://localhost:8989/ws");
+const rws = new wspc("ws://0.0.0.0:8989/ws");
 rws.showDebug = true;
 
 const feedRef = document.querySelector('.feed');

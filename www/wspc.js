@@ -2,7 +2,7 @@ function initServerIp(){
     if (location.host){
         serverIp = location.host;
     }else{
-        serverIp = "localhost"
+        serverIp = "0.0.0.0"
     }
 }
 class wspc extends EventTarget{
